@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>MAFOX AI 2.0</title>
+    <link rel="stylesheet" href="/path/to/styles/default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/a11y-dark.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/atom-one-dark.min.css">
+    <script>
+        hljs.highlightAll();
+    </script>
+</head>
+
+<body>
+    <style>
+        body {
+            background-image: url('./background/background.jpg');
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        body.dark {
+            background-color: #000000;
+            color: #fff;
+        }
+        
+        .container.dark {
+            background-color: #000000;
+            color: #fff;
+        }
+        
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 30px;
+        }
+        
+        .form-control {
+            border: none;
+            border-radius: 10px;
+            color: #444;
+            font-size: 16px;
+            padding: 10px 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            background-color: #ffffff;
+            box-shadow: none;
+            border-color: #db00b6;
+            color: #111;
+            outline: none;
+        }
+        
+        label {
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 20px;
+        }
+        
+        input:focus {
+            background-color: #db00b6;
+            transform: scale(1.05);
+            /* tăng kích thước lên 5% */
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        button[type="submit"] {
+            background-color: #8900f2;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            background-color: #a100f2;
+        }
+        
+        #output-div {
+            margin-top: 20px;
+            border-radius: 20px;
+            padding: 20px;
+        }
+        /* Thiết lập màu và kích thước của danh sách lịch sử tìm kiếm */
+        
+        ul#historyList {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        ul#historyList li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        
+        ul#historyList li:last-child {
+            border-bottom: none;
+        }
+        /* Thiết lập màu nền và màu chữ của nút "Sửa" và "Xóa" */
+        
+        ul#historyList li button {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        ul#historyList li button.edit {
+            color: #4caf50;
+            margin-right: 5px;
+        }
+        
+        ul#historyList li button.delete {
+            color: #f44336;
+            margin-left: 5px;
+        }
+    </style>
+    <div class="container mt-3">
+        <h1 style="background: linear-gradient(to right, #2d00f7, #f20089); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MAFOX AI 2.0</h1>
+        <form id="prompt-form">
+            <div class="form-group">
+                <label for="input-text">Tôi muốn nói với MAFOX AI:</label>
+                <input type="text" class="form-control" id="input-text" placeholder="MAFOX AI 2.0">
+            </div>
+            <div class="feature">
+                <button type="submit" id="searchButton" class="btn btn-primary"><i class="fa-sharp fa-solid fa-paper-plane"></i></button>
+                <button type="button" id="light-button" class="btn btn-primary" style="border-radius: 20px;background-color: #f20089;border: #f20089;"><i class="fa-solid fa-lightbulb"></i></button>
+                <button id="my-button" class="btn btn-primary" style="border-radius: 20px;background-color: #f20089;border: #f20089;"><i class="fa-solid fa-microphone"></i></button>
+            </div>
+        </form>
+        <div class="mt-3" id="output-div"></div>
+        <h5>Lịch sử tìm kiếm:</h5>
+        <ul id="historyList"></ul>
+    </div>
+
+    <script src="/path/to/highlight.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" async defer></script>
+    <script src="/path/to/highlight.min.js" async defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" async defer></script>
+    <script>
+        $(function() {
+            // Lấy danh sách lịch sử tìm kiếm từ localStorage và hiển thị lên màn hình
+            const historyList = $('#historyList');
+            const searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+            searchHistory.forEach((item, index) => {
+                historyList.append(`<li>${item} <button class="edit-btn" data-index="${index}">Sửa</button> <button class="delete-btn" data-index="${index}">Xóa</button></li>`);
+            });
+
+            // Sự kiện click nút Gửi
+            $('#prompt-form').on('submit', function(e) {
+                e.preventDefault();
+                const inputText = $('#input-text').val().trim();
+                if (inputText.length === 0) {
+                    alert('MAFOX AI đang lắng nghe bạn...');
+                    return;
+                }
+                axios.post('/prompt', {
+                        input_text: inputText
+                    })
+                    .then(function(response) {
+                        $('#output-div').text(response.data.output_text);
+                        // Thêm lịch sử tìm kiếm vào danh sách và lưu vào localStorage
+                        searchHistory.push(inputText);
+                        localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+                        historyList.append(`<li>${inputText} <button class="edit-btn" data-index="${searchHistory.length-1}">Sửa</button> <button class="delete-btn" data-index="${searchHistory.length-1}">Xóa</button></li>`);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+            });
+
+            // Sự kiện click nút Tìm Kiếm Bằng Giọng Nói
+            const input = document.getElementById('input-text');
+            const button = document.getElementById('my-button');
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            button.addEventListener('click', () => {
+                recognition.start();
+            });
+            recognition.onresult = (event) => {
+                const result = event.results[0][0].transcript;
+                input.value += result;
+            };
+
+            // Sự kiện click nút Sửa
+            $(document).on('click', '.edit-btn', function() {
+                const index = $(this).data('index');
+                const inputValue = prompt('Nhập nội dung mới');
+                if (inputValue !== null && inputValue.trim() !== '') {
+                    searchHistory[index] = inputValue.trim();
+                    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+                    $(this).parent().html(`${inputValue.trim()} <button class="edit-btn" data-index="${index}">Sửa</button> <button class="delete-btn" data-index="${index}">Xóa</button>`);
+                }
+            });
+
+            // Sự kiện click nút Xóa
+            $(document).on('click', '.delete-btn', function() {
+                const index = $(this).data('index');
+                searchHistory.splice(index, 1);
+                localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+                $(this).parent().remove();
+            });
+        });
+        const body = document.body;
+        const container = document.querySelector('.container');
+        const lightButton = document.querySelector('#light-button');
+
+        lightButton.addEventListener('click', function() {
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                container.style.backgroundColor = '#ffffff';
+            } else {
+                body.classList.add('dark');
+                container.style.backgroundColor = '#000000';
+            }
+        });
+    </script>
+</body>
+
+</html>
